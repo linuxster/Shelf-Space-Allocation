@@ -29,7 +29,14 @@ public class Solution {
         return s.profit;
     }
     public static int printSolution (Solution s) {
-        
+           for (int j = 0; j < s.S.size(); j++) {
+                System.out.println("Prateleira " + j+1 + ":");
+                for (int i = 0; i < s.S.get(j).products.size(); i++) {
+                    System.out.println("Produto "+ i+1 + ":" + s.S.get(j).products.get(i).id);
+               }
+                System.out.println("Espaço livre sobrante: " + s.S.get(j).freeWidth);
+            }
+            System.out.println("Profit: " + s.profit);
         return 1;
     }
 }
