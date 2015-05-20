@@ -27,16 +27,55 @@ public class ShelfSpaceAllocation {
         System.out.println("Iteração 3 produto 1: "+ Product.valueIteration(Product.getProduct(P, 5), 4));    
         
         Solution S0 = new Solution();
-        Shelf shelves[] = new Shelf[4];
-        
-        for (int i = 0; i < S.length; i++) {
-            Shelf S1 = S[i];
-            
+        List<Shelf> shelf0 = new ArrayList<Shelf>();
+        ShelfSpaceAllocation.initializeShelfList(shelf0, S);
+         for (int i = 0; i < 4; i++) {
+            System.out.println("Prateleira "+(1+shelf0.get(i).id)+ ": W-"+shelf0.get(i).worth+"\t| U-"+shelf0.get(i).usedWidth+"\t| F-"+shelf0.get(i).freeWidth);
         }
         
-        
+        for (int i = 0; i < shelf0.size(); i++) {
+            switch (i) {
+                case (1-1): 
+                    shelf0.get(i).products.add(P[2-1]);
+                    shelf0.get(i).usedWidth+=P[2-1].width;
+                    shelf0.get(i).freeWidth-=P[2-1].width;
+                    shelf0.get(i).products.add(P[1-1]);
+                    shelf0.get(i).products.add(P[3-1]);
+                    shelf0.get(i).products.add(P[5-1]);
+                    break;
+                case (2-1): 
+                    shelf0.get(i).products.add(P[3-1]);
+                    shelf0.get(i).products.add(P[5-1]);
+                    shelf0.get(i).products.add(P[6-1]);
+                    shelf0.get(i).products.add(P[1-1]);
+                    shelf0.get(i).products.add(P[3-1]);
+                    break;
+                case (3-1): 
+                    shelf0.get(i).products.add(P[4-1]);
+                    shelf0.get(i).products.add(P[2-1]);
+                    shelf0.get(i).products.add(P[1-1]);
+                    break;
+                case (4-1): 
+                    shelf0.get(i).products.add(P[5-1]);
+                    shelf0.get(i).products.add(P[6-1]);
+                    shelf0.get(i).products.add(P[4-1]);
+                    break;
+            }
+            
+            
+        }
+        S0.S=shelf0;
+        Solution.printSolution(S0);
     }
-
+    
+    public static List<Shelf> initializeShelfList (List<Shelf> shelfList, Shelf[] s) {
+        
+        for (int i = 0; i < s.length; i++) {
+            shelfList.add(s[i]);
+        }
+        return shelfList;
+    }
+    
     public static Shelf[] registerShelves() {
         Shelf S[] = new Shelf[4];
         for (int i = 0; i < S.length; i++) {
@@ -54,7 +93,7 @@ public class ShelfSpaceAllocation {
                     break;
                 case 1:
                     s.freeWidth = 15;
-                    s.worth = 1.2;
+                    s.worth = 1.3;
                     s.usedWidth = 0;
                     s.products = null;
                     break;

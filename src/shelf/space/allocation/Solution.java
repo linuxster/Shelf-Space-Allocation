@@ -26,11 +26,9 @@ public class Solution {
                 s.profit += s.S.get(j).worth*P[i].price*Product.valueFacing(P[i], numberFacings);
             }
         }
-        
-        
         return s.profit;
     }
-    public static int printSolution () {
+    public static int printSolution (Solution s) {
         
         return 1;
     }
