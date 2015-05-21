@@ -44,9 +44,15 @@ public class Shelf {
         return n;
     }
     // Retorna "true" se não couber mais nenhum produto na prateleira
-    public static boolean isFull(Shelf s) {
-        // Retorna "true" se a largura disponível na prateleira for menor que o produto menos largo
-        
-        return false;
+    public static boolean isFull(Shelf s, List<Product> p) {
+        double min=100;
+        for (int i = 0; i < p.size(); i++) {
+            if(p.get(i).width < min)
+                min = p.get(i).width;
+        }
+        if(s.freeWidth < min)
+            return true;
+        else
+            return false;
     }
 }

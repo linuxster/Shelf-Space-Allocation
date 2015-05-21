@@ -14,10 +14,26 @@ public class Product {
     int id;
     double price, salesValue, elasticity, width;
     
-    // 
-    public static void orderProductsProfit(List<Product> products, int[] output) {
-        // Esta função, recebendo um vetor "output", deverá colocar nele os "id" dos produtos, mas de forma ordenada 
-        // (0 mais lucrativo, último índice o menos lucrativo)
+    // Esta função, recebendo um vetor "output", deverá colocar nele os "id" dos produtos, mas de forma ordenada 
+    // (0 mais lucrativo, último índice o menos lucrativo)
+    public static void orderProductsProfit(List<Product> products, List<Integer> output) {
+            for (int i = 0; i < products.size(); i++) {
+            double temp=0, max=0;
+            Product p;
+            int maxProfit = 0, idMax=0, lastId;
+            for (int j = 1; j < (1+products.size()); j++) {
+                if(output.contains(j))
+                    continue;
+                temp = Product.valueFacing(products.get(j-1), 1);
+                if(temp > max) {
+                    max = temp;
+                    idMax=products.get(j-1).id;
+                }
+            }
+            output.add(Product.getProduct(products, idMax).id);
+            max = 0;
+        }
+        
     }
     // Retorna o valor do lucro associado a ter o produto P com n frentes numa prateleira
     public static double valueFacing(Product p, int n) {
@@ -46,9 +62,12 @@ public class Product {
             return iteration[n-1]-iteration[n-2];
     } 
     // 
-    public static Product getProduct(List<Product> products, int n) {
-        // retorna o Produto da lista "products" que tiver o ID igual a "n"
-        return p;
+    public static /*void*/ Product getProduct(List<Product> products, int n) {
+        for (int i = 0; i < products.size(); i++) {
+            if(products.get(i).id == n)
+                return products.get(i);
+        }
+        return null;
     }
 }
 
