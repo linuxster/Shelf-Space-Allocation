@@ -17,7 +17,9 @@ public class SSA {
         List<Product> P = SSA.registerProducts();
         Shelf S[] = SSA.registerShelves();
         
-         
+                
+       
+        
         Solution S0 = new Solution();
         SSA.generateInitialSolution(S0, P, S);
         Solution.getProfit(P, S0);
@@ -80,27 +82,28 @@ public class SSA {
     }
     
     public static int generateInitialSolution(Solution solution, List<Product> products, Shelf[] shelves) {
-        int orderProductsProfit[] = new int[products.size()];
-        int iterator = 0;
+        List<Integer> orderProductsProfit = new ArrayList<Integer>();
+        List<Product> p = new ArrayList<Product>();
+        int i=0, iterator = 0, lastAdded;
         Shelf.initializeShelfList(solution.Shelves, shelves);
+        Product.orderProductsProfit(products, orderProductsProfit);
         
-        for (int i = 0; i < solution.Shelves.size(); i++) {
-            while( !Shelf.isFull(solution.Shelves.get(i)) ) {
-                
-                if(iterator == products.size())
-                    iterator = 0;
-                if(solution.Shelves.get(i).freeWidth >= Product.getProduct(products, orderProductsProfit[iterator]).width) {
-                    Shelf.addProduct(solution.Shelves.get(i), Product.getProduct(products, orderProductsProfit[iterator]));
-                    iterator++;
-                }
-                else 
-                    iterator++;
+        
+        while( !Shelf.isFull(solution.Shelves.get((solution.Shelves.size())-1), products) ) {
+            if(Shelf.isFull(solution.Shelves.get(i), products))
+                i++;
+            if(solution.Shelves.get(i).freeWidth >= Product.getProduct(products, orderProductsProfit.get(iterator)).width) {
+                Shelf.addProduct(solution.Shelves.get(i), Product.getProduct(products, orderProductsProfit.get(iterator)));
+                iterator++;
             }
-            
+            else 
+                iterator++;
+            if(iterator == orderProductsProfit.size())
+                iterator = 0;
         }
-        
         return 1;
     }
+    
         // Introduz no sistema, num vetor de Prateleiras, as que são dadas na instância
     public static Shelf[] registerShelves() {
         Shelf S[] = new Shelf[4];
@@ -111,27 +114,23 @@ public class SSA {
             Shelf s = new Shelf();
             s.id = i;
             s.products = new ArrayList<Product>();
-            
+            s.usedWidth = 0;
             switch(i) {
                 case 0:
                     s.freeWidth = 15;
                     s.worth = 1;
-                    s.usedWidth = 0;
                     break;
                 case 1:
                     s.freeWidth = 15;
                     s.worth = 1.3;
-                    s.usedWidth = 0;
                     break;
                 case 2:
                     s.freeWidth = 15;
                     s.worth = 1.5;
-                    s.usedWidth = 0;
                     break;
                 case 3:
                     s.freeWidth = 15;
                     s.worth = 1.2;
-                    s.usedWidth = 0;
                     break;
             }
             S[i] = s;
