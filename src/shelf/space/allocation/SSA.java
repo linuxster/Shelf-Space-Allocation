@@ -12,75 +12,19 @@ import java.util.Random;
 public class SSA {
     
     public static void main(String[] args) {
+        Solution S0 = new Solution();
         
-        //Product P[] = SSA.registerProductsOld();
         List<Product> P = SSA.registerProducts();
         Shelf S[] = SSA.registerShelves();
         
-                
-       
-        
-        Solution S0 = new Solution();
         SSA.generateInitialSolution(S0, P, S);
         Solution.getProfit(P, S0);
         Solution.printSolution(S0);
-        
-        
-        
-        
-        /*
-        for (int i = 0; i < 4; i++) {
-            System.out.println("Prateleira "+S[i].id+ ": W-"+S[i].worth+"\t| U-"+S[i].usedWidth+"\t| F-"+S[i].freeWidth);
-        }
-        for (int i = 0; i < 6; i++) {
-            System.out.println("Produto "+P.get(i).id+ ": P-"+P.get(i).price+"\t| S-"+P.get(i).salesValue+"\t| E-"+P.get(i).elasticity+"\t| W-"+P.get(i).width);
-        }
-        */
-        //System.out.println("Iteração 3 produto 1: "+ Product.valueIteration(P[4], 4));    
-        
-        
-        /*   TESTE PARA LISTA FEITA EM EXCEL
-        Solution S0 = new Solution();
-        List<Shelf> shelf0 = new ArrayList<Shelf>();
-        Shelf.initializeShelfList(shelf0, S);
-        for (int i = 0; i < shelf0.size(); i++) {
-            switch (i) {
-                case (0): 
-                    Shelf.addProduct(shelf0.get(i), P.get(1));
-                    Shelf.addProduct(shelf0.get(i), P.get(0));
-                    Shelf.addProduct(shelf0.get(i), P.get(2));
-                    Shelf.addProduct(shelf0.get(i), P.get(4));
-                   
-                    //shelf0.get(i).products.add(P.get(1));
-                    //Shelf.addProduct(shelf0.get(i), P[1]);
-                    
-                    break;
-                case (1): 
-                    Shelf.addProduct(shelf0.get(i), P.get(2));
-                    Shelf.addProduct(shelf0.get(i), P.get(4));
-                    Shelf.addProduct(shelf0.get(i), P.get(5));
-                    Shelf.addProduct(shelf0.get(i), P.get(0));
-                    Shelf.addProduct(shelf0.get(i), P.get(2));
-                    break;
-                case (2): 
-                    Shelf.addProduct(shelf0.get(i), P.get(3));
-                    Shelf.addProduct(shelf0.get(i), P.get(1));
-                    Shelf.addProduct(shelf0.get(i), P.get(0));
-                    break;
-                case (3): 
-                    Shelf.addProduct(shelf0.get(i), P.get(4));
-                    Shelf.addProduct(shelf0.get(i), P.get(5));
-                    Shelf.addProduct(shelf0.get(i), P.get(3));
-                    break;
-            }
-        }
-        S0.Shelves=shelf0;
-        Solution.getProfit(P, S0);
-        Solution.printSolution(S0);  
-        */
+        Solution.printRepresentation(Solution.problemRepresentation(S0, P));
         
     }
     
+    // Gera a nossa solução inicial para o problema
     public static int generateInitialSolution(Solution solution, List<Product> products, Shelf[] shelves) {
         List<Integer> orderProductsProfit = new ArrayList<Integer>();
         List<Product> p = new ArrayList<Product>();
@@ -103,8 +47,7 @@ public class SSA {
         }
         return 1;
     }
-    
-        // Introduz no sistema, num vetor de Prateleiras, as que são dadas na instância
+    // Introduz no sistema, num vetor de Prateleiras, as que são dadas na instância
     public static Shelf[] registerShelves() {
         Shelf S[] = new Shelf[4];
         for (int i = 0; i < S.length; i++) {
@@ -239,3 +182,43 @@ public class SSA {
         return P;
     }
 }
+
+/*   TESTE PARA LISTA FEITA EM EXCEL
+        Solution S0 = new Solution();
+        List<Shelf> shelf0 = new ArrayList<Shelf>();
+        Shelf.initializeShelfList(shelf0, S);
+        for (int i = 0; i < shelf0.size(); i++) {
+            switch (i) {
+                case (0): 
+                    Shelf.addProduct(shelf0.get(i), P.get(1));
+                    Shelf.addProduct(shelf0.get(i), P.get(0));
+                    Shelf.addProduct(shelf0.get(i), P.get(2));
+                    Shelf.addProduct(shelf0.get(i), P.get(4));
+                   
+                    //shelf0.get(i).products.add(P.get(1));
+                    //Shelf.addProduct(shelf0.get(i), P[1]);
+                    
+                    break;
+                case (1): 
+                    Shelf.addProduct(shelf0.get(i), P.get(2));
+                    Shelf.addProduct(shelf0.get(i), P.get(4));
+                    Shelf.addProduct(shelf0.get(i), P.get(5));
+                    Shelf.addProduct(shelf0.get(i), P.get(0));
+                    Shelf.addProduct(shelf0.get(i), P.get(2));
+                    break;
+                case (2): 
+                    Shelf.addProduct(shelf0.get(i), P.get(3));
+                    Shelf.addProduct(shelf0.get(i), P.get(1));
+                    Shelf.addProduct(shelf0.get(i), P.get(0));
+                    break;
+                case (3): 
+                    Shelf.addProduct(shelf0.get(i), P.get(4));
+                    Shelf.addProduct(shelf0.get(i), P.get(5));
+                    Shelf.addProduct(shelf0.get(i), P.get(3));
+                    break;
+            }
+        }
+        S0.Shelves=shelf0;
+        Solution.getProfit(P, S0);
+        Solution.printSolution(S0);  
+        */
