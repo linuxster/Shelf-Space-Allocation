@@ -62,7 +62,7 @@ public class Product {
             return iteration[n-1]-iteration[n-2];
     } 
     // 
-    public static /*void*/ Product getProduct(List<Product> products, int n) {
+    public static Product getProduct(List<Product> products, int n) {
         for (int i = 0; i < products.size(); i++) {
             if(products.get(i).id == n)
                 return products.get(i);

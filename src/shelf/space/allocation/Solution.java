@@ -46,4 +46,24 @@ public class Solution {
         System.out.print("Lucro: "); System.out.printf("%.2f\n", s.profit);
         return 1;
     }
+    // Pega numa "Solution" e passa-a para nossa representação do problema
+    public static int[][] problemRepresentation(Solution s, List<Product> p) {
+        int output[][] = new int[p.size()][s.Shelves.size()];
+        for (int i = 0; i < p.size(); i++) {
+            for (int j = 0; j < s.Shelves.size(); j++) {
+                output[i][j]=Shelf.getFacings(s.Shelves.get(j), p.get(i));
+            }
+        }
+        return output;
+    }
+    // Imprime a nossa representação para a solução ao problema
+    public static void printRepresentation(int[][] rep) {
+        System.out.println("Solução: ");
+        for (int i = 0; i < rep.length /*nProducts*/ ; i++) {
+            for (int j = 0; j < rep[i].length /*nShelves*/ ; j++) {
+                System.out.print("X"+ (i+1) + (j+1) +": "+ rep[i][j] +"\t");
+            }
+            System.out.println("");
+        }
+    }
 }
