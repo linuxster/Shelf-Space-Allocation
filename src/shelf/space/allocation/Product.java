@@ -1,9 +1,7 @@
 package shelf.space.allocation;
 
-// Para Fazer:
-//      1. escrever a função orderProductsProfit
-//      2. escrever a função getProduct
-// Mudanças: removido o Product.used das funções
+// Para Fazer:  
+// Mudanças:     
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ public class Product {
     int id;
     double price, salesValue, elasticity, width;
     
-    // Esta função, recebendo um vetor "output", deverá colocar nele os "id" dos produtos, mas de forma ordenada 
+    // esta função, recebendo um vetor "output", deverá colocar nele os "id" dos produtos, mas de forma ordenada 
     // (0 mais lucrativo, último índice o menos lucrativo)
     public static void orderProductsProfit(List<Product> products, List<Integer> output) {
             for (int i = 0; i < products.size(); i++) {
@@ -35,7 +33,7 @@ public class Product {
         }
         
     }
-    // Retorna o valor do lucro associado a ter o produto P com n frentes numa prateleira
+    // retorna o valor do lucro associado a ter o produto P com n frentes numa prateleira
     public static double valueFacing(Product p, int n) {
         double value;
         double iteration[] = new double[6];
@@ -46,7 +44,7 @@ public class Product {
         }
         return iteration[n-1];
     } 
-    // Retorna o lucro associado a ter o produto P n iterações, quando comparado com já termos n-1 iterações na prateleira
+    // retorna o lucro associado a ter o produto P n iterações, quando comparado com já termos n-1 iterações na prateleira
     public static double valueIteration(Product p, int n) {
         int maxFacings = 6;
         double value;
@@ -61,7 +59,7 @@ public class Product {
         else
             return iteration[n-1]-iteration[n-2];
     } 
-    // 
+    // retorna o Produto que corresponde ao ID "n"
     public static Product getProduct(List<Product> products, int n) {
         for (int i = 0; i < products.size(); i++) {
             if(products.get(i).id == n)

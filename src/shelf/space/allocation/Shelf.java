@@ -6,8 +6,7 @@ import java.util.ListIterator;
 import java.util.Collections;
 
 // Para Fazer:  
-//      1. Escrever a função isFull
-// Mudanças:    removido o Product.used das funções
+// Mudanças:    
 
 
 public class Shelf {
@@ -15,26 +14,26 @@ public class Shelf {
     double freeWidth, usedWidth, worth;
     List<Product> products = new ArrayList<Product>();
     
-    // Apenas inicializa uma lista de prateleiras com os valores iniciais dados pela instância
+    // apenas inicializa uma lista de prateleiras com os valores iniciais dados pela instância
     public static void initializeShelfList (List<Shelf> shelfList, Shelf[] s) {
         
         for (int i = 0; i < s.length; i++) {
             shelfList.add(s[i]);
         }
     }
-    // Adiciona um produto a uma prateleira, e realiza operações associadas
+    // adiciona um produto a uma prateleira e realiza operações associadas
     public static void addProduct(Shelf s, Product p) {
         s.products.add(p);
         s.usedWidth += p.width;
         s.freeWidth -= p.width;
     }
-    // Remove um produto de uma prateleira, e realiza operações associadas
+    // remove um produto de uma prateleira e realiza operações associadas
     public static void removeProduct(Shelf s, Product p) {
         s.products.remove(p);
         s.usedWidth -= p.width;
         s.freeWidth += p.width;
     }
-    // Retorna o número de Facings do produto, numa determinada prateleira
+    // retorna o número de Facings do produto numa determinada prateleira
     public static int getFacings(Shelf s, Product p) {
         int n=0;
         for (int j = 0; j <s.products.size(); j++) {
@@ -43,7 +42,7 @@ public class Shelf {
         } 
         return n;
     }
-    // Retorna "true" se não couber mais nenhum produto na prateleira
+    // retorna "true" se não couber mais nenhum produto na prateleira
     public static boolean isFull(Shelf s, List<Product> p) {
         double min=100;
         for (int i = 0; i < p.size(); i++) {

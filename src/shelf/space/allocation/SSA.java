@@ -13,22 +13,32 @@ public class SSA {
     
     public static void main(String[] args) {
         Solution S0 = new Solution();
+        Solution S1 = new Solution();
         
         List<Product> P = SSA.registerProducts();
         Shelf S[] = SSA.registerShelves();
         
         SSA.generateInitialSolution(S0, P, S);
         Solution.getProfit(P, S0);
-        Solution.printSolution(S0);
-        Solution.printRepresentation(Solution.problemRepresentation(S0, P));
+        Solution.printRepresentation(Solution.problemRepresentation(S0, P), S0.profit);
+        
+        /*
+        Action a1 = new Action();
+        S1 = Action.switchShelf(S0, a1, P);
+        Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
+        Action.printAction(a1);
+        */
+        Action a2 = new Action();
+        S1 = Action.switchProduct(S0, a2, P);
+        Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
+        Action.printAction(a2);
         
     }
     
-    // Gera a nossa solução inicial para o problema
+    // gera a nossa solução inicial para o problema
     public static int generateInitialSolution(Solution solution, List<Product> products, Shelf[] shelves) {
         List<Integer> orderProductsProfit = new ArrayList<Integer>();
-        List<Product> p = new ArrayList<Product>();
-        int i=0, iterator = 0, lastAdded;
+        int i=0, iterator = 0;
         Shelf.initializeShelfList(solution.Shelves, shelves);
         Product.orderProductsProfit(products, orderProductsProfit);
         
@@ -47,7 +57,7 @@ public class SSA {
         }
         return 1;
     }
-    // Introduz no sistema, num vetor de Prateleiras, as que são dadas na instância
+    // introduz no sistema, num vetor de Prateleiras, as que são dadas na instância
     public static Shelf[] registerShelves() {
         Shelf S[] = new Shelf[4];
         for (int i = 0; i < S.length; i++) {
@@ -80,7 +90,7 @@ public class SSA {
         }
         return S;
     }
-    // Introduz no sistema, numa lista de Produtos, o que são dadas na instância
+    // introduz no sistema, numa lista de Produtos, o que são dadas na instância
     public static List<Product> registerProducts() {
         List<Product> p = new ArrayList<Product>();
         int productListSize = 6;
@@ -130,7 +140,7 @@ public class SSA {
         }
         return p;
     }
-    // Forma antiga de registar produtos
+    // forma antiga de registar produtos (sem uso atualmente)
     public static Product[] registerProductsOld() {
         Product P[] = new Product[6];
         for (int i = 0; i < P.length; i++) {
@@ -182,6 +192,31 @@ public class SSA {
         return P;
     }
 }
+
+/*
+import java.util.Random;
+
+public class MotionUncertainty {
+
+    // after the agent decides the action, this gives us the real action (after applying the uncertainty on movements)
+    public static String GenerateTrueAction() {
+        String trueAction = new String();
+        Random rand = new Random();
+        int prob = rand.nextInt(100);
+        double p1, p2;
+        p1 = 0.8; p2 = 0.1;
+
+        if ( prob <= 100*p1-1 )
+            trueAction = "^";
+        else if ( prob > (100*p1-1) &&  prob <= (100*(p1+p2)-1) )
+            trueAction = "<";
+        else if ( prob > (100*(p1+p2)-1) && prob <= 100*(p1+2*p2) )
+            trueAction = ">";
+
+        return trueAction;
+    }
+}
+*/
 
 /*   TESTE PARA LISTA FEITA EM EXCEL
         Solution S0 = new Solution();

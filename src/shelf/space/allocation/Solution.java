@@ -13,7 +13,7 @@ public class Solution {
     List<Shelf> Shelves = new ArrayList<Shelf>();
     double profit;
     
-    // Retorna o Lucro gerado por uma Solução
+    // retorna o Lucro gerado por uma Solução
     public static double getProfit (List<Product> P, Solution s) {
         int numberFacings=0;
         
@@ -29,7 +29,7 @@ public class Solution {
         }
         return s.profit;
     }
-    // Apenas imprime uma solução, Prateleira - Produtos - Lucro
+    // apenas imprime uma solução, Prateleira - Produtos - Lucro
     public static int printSolution (Solution s) {
         for (int j = 0; j < s.Shelves.size(); j++) {
             System.out.println("Prateleira " + (j+1) + ":");
@@ -46,7 +46,7 @@ public class Solution {
         System.out.print("Lucro: "); System.out.printf("%.2f\n", s.profit);
         return 1;
     }
-    // Pega numa "Solution" e passa-a para nossa representação do problema
+    // pega numa "Solution" e passa-a para nossa representação do problema
     public static int[][] problemRepresentation(Solution s, List<Product> p) {
         int output[][] = new int[p.size()][s.Shelves.size()];
         for (int i = 0; i < p.size(); i++) {
@@ -56,9 +56,9 @@ public class Solution {
         }
         return output;
     }
-    // Imprime a nossa representação para a solução ao problema
-    public static void printRepresentation(int[][] rep) {
-        System.out.println("Solução: ");
+    // imprime a nossa representação para a solução ao problema
+    public static void printRepresentation(int[][] rep, double profit) {
+        System.out.print("Solução: (lucro "); System.out.printf("%.2f)\n", profit);
         for (int i = 0; i < rep.length /*nProducts*/ ; i++) {
             for (int j = 0; j < rep[i].length /*nShelves*/ ; j++) {
                 System.out.print("X"+ (i+1) + (j+1) +": "+ rep[i][j] +"\t");
