@@ -6,8 +6,8 @@ import java.util.ListIterator;
 import java.util.Collections;
 import java.util.Random;
 
+
 // Para Fazer:  
-// Mudanças:    
 
 public class SSA {
     
@@ -90,7 +90,7 @@ public class SSA {
         }
         return S;
     }
-    // introduz no sistema, numa lista de Produtos, o que são dadas na instância
+    // introduz no sistema, numa lista de Produtos, os que são dados na instância
     public static List<Product> registerProducts() {
         List<Product> p = new ArrayList<Product>();
         int productListSize = 6;

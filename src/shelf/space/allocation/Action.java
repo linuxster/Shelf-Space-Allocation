@@ -2,9 +2,9 @@ package shelf.space.allocation;
 import java.util.Random;
 import java.util.List;
 
+
 // Para Fazer:  
 // Mudanças: 
-
 
 // Detalhes das ações:
 // specs[0]=shelf1, specs[1]=product1, specs[2]=shelf2, specs[3]=product2 

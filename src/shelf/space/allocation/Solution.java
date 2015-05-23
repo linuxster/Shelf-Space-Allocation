@@ -6,8 +6,9 @@ import java.util.ListIterator;
 import java.util.Collections;
 import java.util.Random;
 
+
 // Para Fazer:  
-// Mudanças:    
+//      1. escrever a função mostLucrative (descrição na função)
 
 public class Solution {
     List<Shelf> Shelves = new ArrayList<Shelf>();
@@ -28,6 +29,13 @@ public class Solution {
             }
         }
         return s.profit;
+    }
+    // de uma lista de soluções, retorna o índice daquela que for mais lucrativa
+    public static int mostLucrative(List<Solution> sList) {
+        int index=-1;
+        
+        
+        return index;
     }
     // apenas imprime uma solução, Prateleira - Produtos - Lucro
     public static int printSolution (Solution s) {

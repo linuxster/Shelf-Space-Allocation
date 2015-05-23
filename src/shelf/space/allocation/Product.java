@@ -1,12 +1,8 @@
 package shelf.space.allocation;
+import java.util.List;  
 
-// Para Fazer:  
-// Mudanças:     
 
-import java.util.List;
-
-//      
-
+// Para Fazer:      
 
 public class Product {
     int id;

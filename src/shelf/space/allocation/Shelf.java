@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Collections;
 
-// Para Fazer:  
-// Mudanças:    
 
+// Para Fazer:  
+//      1. escrever a função getShelfProfit (descrição na função)
 
 public class Shelf {
     int id;
@@ -20,6 +20,13 @@ public class Shelf {
         for (int i = 0; i < s.length; i++) {
             shelfList.add(s[i]);
         }
+    }
+    // retorna o lucro associado a uma prateleira
+    public static double getShelfProfit(Shelf s, List<Product> p) {
+        double shelfProfit=0;
+        
+        
+        return shelfProfit;
     }
     // adiciona um produto a uma prateleira e realiza operações associadas
     public static void addProduct(Shelf s, Product p) {
