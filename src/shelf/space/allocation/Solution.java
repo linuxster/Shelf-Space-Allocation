@@ -20,6 +20,8 @@ public class Solution {
         
         if(s.profit != 0)
             s.profit = 0;
+        
+        // lucro total da prateleira
         for (int i = 0; i < s.Shelves.size(); i++) {
             for (int j = 0; j < P.size(); j++) {
                 numberFacings = Shelf.getFacings(s.Shelves.get(i), P.get(j));
@@ -28,12 +30,21 @@ public class Solution {
                 s.profit += s.Shelves.get(i).worth*Product.valueFacing(P.get(j), numberFacings);
             }
         }
+        // penalização por infringir as restrições
+        
+        
         return s.profit;
     }
     // de uma lista de soluções, retorna o índice daquela que for mais lucrativa
     public static int mostLucrative(List<Solution> sList) {
         int index=-1;
-        
+        double maxProfit=0;
+        for (int i = 0; i < sList.size(); i++) {
+            if(sList.get(i).profit > maxProfit) {
+                maxProfit = sList.get(i).profit;
+                index = i;
+            }
+        }
         
         return index;
     }

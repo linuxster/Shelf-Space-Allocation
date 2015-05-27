@@ -12,8 +12,10 @@ import java.util.Random;
 public class SSA {
     
     public static void main(String[] args) {
+        int iterationMoves = 10;
         Solution S0 = new Solution();
         Solution S1 = new Solution();
+        List<Action> aListIteration = new ArrayList<Action>();
         
         List<Product> P = SSA.registerProducts();
         Shelf S[] = SSA.registerShelves();
@@ -22,16 +24,22 @@ public class SSA {
         Solution.getProfit(P, S0);
         Solution.printRepresentation(Solution.problemRepresentation(S0, P), S0.profit);
         
+        S1 = SSA.generateProblemIteration(P, S, S0, aListIteration, iterationMoves);
+        System.out.println("\n\n Melhor solução:\n");
+        Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
+        
+        
         /*
+        Action a2 = new Action();
+        S1 = Action.switchProduct(S0, a2, P);
+        Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
+        Action.printAction(a2);
+        
         Action a1 = new Action();
         S1 = Action.switchShelf(S0, a1, P);
         Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
         Action.printAction(a1);
         */
-        Action a2 = new Action();
-        S1 = Action.switchProduct(S0, a2, P);
-        Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
-        Action.printAction(a2);
         
     }
     
@@ -56,6 +64,29 @@ public class SSA {
                 iterator = 0;
         }
         return 1;
+    }
+    //
+    public static Solution generateProblemIteration(List<Product> p, Shelf[] s, Solution s0, List<Action> aList, int nMoves) {
+        int r=-1;
+        Action a = new Action();
+        List<Solution> sList = new ArrayList<Solution>();
+        for (int i = 0; i < nMoves; i++) {
+            r = Action.randomAction();
+            if(r == 0) {
+                sList.add(Action.switchShelf(s0, a, p));
+                aList.add(a);
+                Solution.printRepresentation(Solution.problemRepresentation(sList.get(i), p), sList.get(i).profit);
+                Action.printAction(a);
+            }
+            else if(r == 1) {
+                sList.add(Action.switchProduct(s0, a, p));
+                aList.add(a);
+                Solution.printRepresentation(Solution.problemRepresentation(sList.get(i), p), sList.get(i).profit);
+                Action.printAction(a);
+            }
+        }
+        
+        return sList.get(Solution.mostLucrative(sList));
     }
     // introduz no sistema, num vetor de Prateleiras, as que são dadas na instância
     public static Shelf[] registerShelves() {

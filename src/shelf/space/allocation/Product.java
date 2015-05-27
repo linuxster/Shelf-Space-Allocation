@@ -13,8 +13,7 @@ public class Product {
     public static void orderProductsProfit(List<Product> products, List<Integer> output) {
             for (int i = 0; i < products.size(); i++) {
             double temp=0, max=0;
-            Product p;
-            int maxProfit = 0, idMax=0, lastId;
+            int idMax=0;
             for (int j = 1; j < (1+products.size()); j++) {
                 if(output.contains(j))
                     continue;

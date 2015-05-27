@@ -136,8 +136,8 @@ public class Action {
             }
         }
         // para atualizar a largura usada nas prateleiras
-        width1 = s1.Shelves.get(index1).products.get(index1).width;
-        width2 = s1.Shelves.get(index2).products.get(index2).width;
+        width1 = s1.Shelves.get(shelf1).products.get(index1).width;
+        width2 = s1.Shelves.get(shelf2).products.get(index2).width;
         if(width1 > width2) {
             widthDif = width1 - width2;
             s1.Shelves.get(shelf1).freeWidth += widthDif; 
@@ -173,6 +173,18 @@ public class Action {
     public static int randomFacing(int nFacings) {
         Random rand = new Random();
         return rand.nextInt(nFacings);
+    }
+    // retorna um número aleatório de uma ação
+    public static int randomAction() {
+        int index=-1;
+        Random rand = new Random();
+        int r = rand.nextInt(100);
+        if(r < 50)
+            return 0;
+        else if (r >= 50 && r < 100)
+            return 1;
+        
+        return index;
     }
     // imprime uma ação, consoante o seu tipo
     public static void printAction (Action a) {
