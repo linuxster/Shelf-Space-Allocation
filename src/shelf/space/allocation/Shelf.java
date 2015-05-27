@@ -24,8 +24,11 @@ public class Shelf {
     // retorna o lucro associado a uma prateleira
     public static double getShelfProfit(Shelf s, List<Product> p) {
         double shelfProfit=0;
-        
-        
+        for (int i=0;i<p.size();i++){
+            int facings = Shelf.getFacings(s,Product.getProduct(p, i));
+            double lucroproduto=Product.valueFacing(Product.getProduct(p, i), facings);
+            shelfProfit = shelfProfit + lucroproduto*s.worth;
+        }
         return shelfProfit;
     }
     // adiciona um produto a uma prateleira e realiza operações associadas
