@@ -17,6 +17,7 @@ public class Solution {
     // retorna o Lucro gerado por uma Solução
     public static double getProfit (List<Product> P, Solution s) {
         int numberFacings=0;
+        int restrictionPenalty = 500;
         
         if(s.profit != 0)
             s.profit = 0;
@@ -31,7 +32,12 @@ public class Solution {
             }
         }
         // penalização por infringir as restrições
-        
+        int sizePenalty = 0;
+        for (int i = 0; i < s.Shelves.size(); i++) {
+            if( Shelf.isOverLimit(s.Shelves.get(i)) )
+                sizePenalty++;
+        }
+        s.profit -= sizePenalty * restrictionPenalty;
         
         return s.profit;
     }

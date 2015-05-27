@@ -15,18 +15,36 @@ public class SSA {
         int iterationMoves = 10;
         Solution S0 = new Solution();
         Solution S1 = new Solution();
+        Solution globalBest = new Solution();
         List<Action> aListIteration = new ArrayList<Action>();
         
         List<Product> P = SSA.registerProducts();
         Shelf S[] = SSA.registerShelves();
         
+        // GERAR A SOLUÇÃO INICIAL
         SSA.generateInitialSolution(S0, P, S);
         Solution.getProfit(P, S0);
         Solution.printRepresentation(Solution.problemRepresentation(S0, P), S0.profit);
         
-        S1 = SSA.generateProblemIteration(P, S, S0, aListIteration, iterationMoves);
-        System.out.println("\n\n Melhor solução:\n");
-        Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
+        globalBest.Shelves = S0.Shelves;
+        globalBest.profit = S0.profit;
+        S1.Shelves = S0.Shelves;
+        S1.profit = S0.profit;
+        
+        for (int i = 0; i < 100; i++) {
+            S1 = SSA.generateProblemIteration(P, S, S1, aListIteration, iterationMoves);
+            //System.out.println("Melhor solução "+ (i+1) +":");
+            //Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
+            //System.out.println("");
+            
+            if(S1.profit > globalBest.profit) {
+                globalBest.Shelves = S1.Shelves;
+                globalBest.profit = S1.profit;
+            }
+        }
+        System.out.println("\n\nMelhor solução:");
+        Solution.printRepresentation(Solution.problemRepresentation(globalBest, P), globalBest.profit);
+        System.out.printf("%.2f\t%.2f\t%.2f\t%.2f\n", globalBest.Shelves.get(0).freeWidth, globalBest.Shelves.get(1).freeWidth, globalBest.Shelves.get(2).freeWidth, globalBest.Shelves.get(3).freeWidth);
         
         
         /*
@@ -67,22 +85,31 @@ public class SSA {
     }
     //
     public static Solution generateProblemIteration(List<Product> p, Shelf[] s, Solution s0, List<Action> aList, int nMoves) {
-        int r=-1;
+        int r = -1;
         Action a = new Action();
+        //Solution globalBest = s0;
+        Solution current = new Solution();
+        current.Shelves = s0.Shelves;
+        current.profit = s0.profit;
         List<Solution> sList = new ArrayList<Solution>();
+        
+        
         for (int i = 0; i < nMoves; i++) {
+            a = new Action();
             r = Action.randomAction();
             if(r == 0) {
-                sList.add(Action.switchShelf(s0, a, p));
+                sList.add(i, Action.switchShelf(current, a, p));
                 aList.add(a);
-                Solution.printRepresentation(Solution.problemRepresentation(sList.get(i), p), sList.get(i).profit);
-                Action.printAction(a);
+                //Solution.printRepresentation(Solution.problemRepresentation(sList.get(i), p), sList.get(i).profit);
+                //System.out.printf("%.2f\t%.2f\t%.2f\t%.2f\n", sList.get(i).Shelves.get(0).freeWidth, sList.get(i).Shelves.get(1).freeWidth, sList.get(i).Shelves.get(2).freeWidth, sList.get(i).Shelves.get(3).freeWidth);
+                //Action.printAction(a);                    
             }
             else if(r == 1) {
-                sList.add(Action.switchProduct(s0, a, p));
-                aList.add(a);
-                Solution.printRepresentation(Solution.problemRepresentation(sList.get(i), p), sList.get(i).profit);
-                Action.printAction(a);
+                sList.add(i, Action.switchProduct(current, a, p));
+                aList.add(a); 
+                //Solution.printRepresentation(Solution.problemRepresentation(sList.get(i), p), sList.get(i).profit);
+                //System.out.printf("%.2f\t%.2f\t%.2f\t%.2f\n", sList.get(i).Shelves.get(0).freeWidth, sList.get(i).Shelves.get(1).freeWidth, sList.get(i).Shelves.get(2).freeWidth, sList.get(i).Shelves.get(3).freeWidth);
+                //Action.printAction(a);
             }
         }
         

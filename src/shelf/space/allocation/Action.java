@@ -18,7 +18,9 @@ public class Action {
     // ação tipo 0, troca uma prateleira por outra e retorna a nova solução já com o lucro atualizado
     public static Solution switchShelf(Solution s0, Action a, List<Product> p) {
         Shelf aux = new Shelf();
-        Solution s1 = s0;
+        Solution s1 = new Solution();
+        s1.Shelves = s0.Shelves;
+        s1.profit = s0.profit;
         int shelf1, shelf2;
         double auxWorth;
         a.type = 0;
@@ -44,9 +46,11 @@ public class Action {
     }
     // ação tipo 1, troca um produto por outro e retorna a nova solução já com o lucro atualizado 
     public static Solution switchProduct(Solution s0, Action a, List<Product> p) {
-        Solution s1 = s0;
+        Solution s1 = new Solution();
+        s1.Shelves = s0.Shelves;
+        s1.profit = s0.profit;
         Product aux = new Product();
-        boolean ok1 = false, ok2 = false, flag = false;
+        boolean ok1 = false, ok2 = false;
         double widthDif=0, width1=0, width2=0;
         int shelf1, shelf2;
         int product1=-1, product2=-1;
@@ -54,7 +58,10 @@ public class Action {
         
         a.type = 1;
         shelf1 = randomShelf(s1.Shelves.size());
-        shelf2 = randomShelf(s1.Shelves.size());
+        shelf2 = shelf1;
+        while(shelf2 == shelf1) {
+            shelf2 = randomShelf(s1.Shelves.size());
+        }
         while(!ok1) {
             product1 = randomProduct(p.size());
             nFacingsP1 = Shelf.getFacings(s1.Shelves.get(shelf1), p.get(product1));
@@ -66,41 +73,17 @@ public class Action {
                 ok1 = true;
             }
         }
-        if(shelf1 == shelf2) {
-            while (!ok2) {
-                product2 = randomProduct(p.size());
-                nFacingsP2 = Shelf.getFacings(s1.Shelves.get(shelf2), p.get(product2));
-                if(product2 == product1) {
-                    if(nFacingsP2 > 1) {
-                        randFacingP2 = randomFacing(nFacingsP2)+1;
-                        while(randFacingP2 == randFacingP1) {
-                            randFacingP2 = randomFacing(nFacingsP2)+1;
-                        }
-                        ok2 = true;
-                    }
-                }
-                else {
-                    if(nFacingsP2 == 1) {
-                        ok2 = true;
-                    }
-                    else if(nFacingsP2 > 1) {
-                        randFacingP2 = randomFacing(nFacingsP2)+1;
-                        ok2 = true;
-                    }
-                }
+        while(!ok2) {
+            product2 = randomProduct(p.size());
+            if (product2 == product1) 
+                continue;
+            nFacingsP2 = Shelf.getFacings(s1.Shelves.get(shelf2), p.get(product2));
+            if(nFacingsP2 == 1) {
+                ok2 = true;
             }
-        }
-        else {
-            while(!ok2) {
-                product2 = randomProduct(p.size());
-                nFacingsP2 = Shelf.getFacings(s1.Shelves.get(shelf2), p.get(product2));
-                if(nFacingsP2 == 1) {
-                    ok2 = true;
-                }
-                else if(nFacingsP2 > 1) {
-                    randFacingP2 = randomFacing(nFacingsP2)+1;
-                    ok2 = true;
-                }
+            else if(nFacingsP2 > 1) {
+                randFacingP2 = randomFacing(nFacingsP2)+1;
+                ok2 = true;
             }
         }
         if(randFacingP1 == 0) 
@@ -198,3 +181,56 @@ public class Action {
         }
     }
 }
+
+/* COMPARAR AO ESCOLHER O PRODUTO 2 SE É IGUAL AO PRODUTO 1
+    if(product2 == product1) {
+                    if(nFacingsP2 > 1) {
+                        randFacingP2 = randomFacing(nFacingsP2)+1;
+                        while(randFacingP2 == randFacingP1) {
+                            randFacingP2 = randomFacing(nFacingsP2)+1;
+                        }
+                        ok2 = true;
+                    }
+                }
+                else {
+                    if(nFacingsP2 == 1) {
+                        ok2 = true;
+                    }
+                    else if(nFacingsP2 > 1) {
+                        randFacingP2 = randomFacing(nFacingsP2)+1;
+                        ok2 = true;
+                    }
+                }
+*/
+/* PERMITIR TROCAS NA MESMA PRATELEIRA
+    if(shelf1 == shelf2) {
+            while (!ok2) {
+                product2 = randomProduct(p.size());
+                if ( product2 == product1) 
+                    continue;
+                nFacingsP2 = Shelf.getFacings(s1.Shelves.get(shelf2), p.get(product2));
+                if(nFacingsP2 == 1) {
+                    ok2 = true;
+                }
+                else if(nFacingsP2 > 1) {
+                    randFacingP2 = randomFacing(nFacingsP2)+1;
+                    ok2 = true;
+                }
+            }
+        }
+        else {
+            while(!ok2) {
+                product2 = randomProduct(p.size());
+                if (product2 == product1) 
+                    continue;
+                nFacingsP2 = Shelf.getFacings(s1.Shelves.get(shelf2), p.get(product2));
+                if(nFacingsP2 == 1) {
+                    ok2 = true;
+                }
+                else if(nFacingsP2 > 1) {
+                    randFacingP2 = randomFacing(nFacingsP2)+1;
+                    ok2 = true;
+                }
+            }
+        }
+*/

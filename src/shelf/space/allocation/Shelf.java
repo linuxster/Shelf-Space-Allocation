@@ -61,4 +61,12 @@ public class Shelf {
         else
             return false;
     }
+    // retorna "true" se uma prateleira estiver cheia demais
+    public static boolean isOverLimit(Shelf s) {
+        if(s.freeWidth < 0) {
+            return true;
+        }
+        else   
+            return false;
+    }
 }
