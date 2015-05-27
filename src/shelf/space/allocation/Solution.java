@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.Random;
 
 
-// Para Fazer:  
-//      1. escrever a função mostLucrative (descrição na função)
 
 public class Solution {
     List<Shelf> Shelves = new ArrayList<Shelf>();
