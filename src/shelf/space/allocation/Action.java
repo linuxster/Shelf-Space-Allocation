@@ -3,8 +3,7 @@ import java.util.Random;
 import java.util.List;
 
 
-// Para Fazer:  
-// Mudanças: 
+// Para Fazer:  Atualizar a função printAction
 
 // Detalhes das ações:
 // specs[0]=shelf1, specs[1]=product1, specs[2]=shelf2, specs[3]=product2 
@@ -15,133 +14,7 @@ public class Action {
     int type;
     int specs[] = new int[4];
     
-    // ação tipo 0, troca uma prateleira por outra e retorna a nova solução já com o lucro atualizado
-    public static Solution switchShelf(Solution s0, Action a, List<Product> p) {
-        Shelf aux = new Shelf();
-        Solution s1 = new Solution();
-        s1.Shelves = s0.Shelves;
-        s1.profit = s0.profit;
-        int shelf1, shelf2;
-        double auxWorth;
-        a.type = 0;
-        
-        shelf1 = randomShelf(s0.Shelves.size());
-        shelf2 = shelf1;
-        while(shelf2 == shelf1) {
-            shelf2 = randomShelf(s0.Shelves.size());
-        }
-        a.specs[0] = shelf1; 
-        a.specs[2] = shelf2;
-        
-        auxWorth = s1.Shelves.get(shelf2).worth;
-        s1.Shelves.get(shelf2).worth = s1.Shelves.get(shelf1).worth;
-        s1.Shelves.get(shelf1).worth = auxWorth;
-        
-        aux = s1.Shelves.get(shelf2);
-        s1.Shelves.set(shelf2, s1.Shelves.get(shelf1));
-        s1.Shelves.set(shelf1, aux);
-        Solution.getProfit(p, s1);
-        
-        return s1;
-    }
-    // ação tipo 1, troca um produto por outro e retorna a nova solução já com o lucro atualizado 
-    public static Solution switchProduct(Solution s0, Action a, List<Product> p) {
-        Solution s1 = new Solution();
-        s1.Shelves = s0.Shelves;
-        s1.profit = s0.profit;
-        Product aux = new Product();
-        boolean ok1 = false, ok2 = false;
-        double widthDif=0, width1=0, width2=0;
-        int shelf1, shelf2;
-        int product1=-1, product2=-1;
-        int nFacingsP1, nFacingsP2, randFacingP1=0, randFacingP2=0, count=0, index1=-1, index2=-1;
-        
-        a.type = 1;
-        shelf1 = randomShelf(s1.Shelves.size());
-        shelf2 = shelf1;
-        while(shelf2 == shelf1) {
-            shelf2 = randomShelf(s1.Shelves.size());
-        }
-        while(!ok1) {
-            product1 = randomProduct(p.size());
-            nFacingsP1 = Shelf.getFacings(s1.Shelves.get(shelf1), p.get(product1));
-            if(nFacingsP1 == 1) {
-                ok1 = true;
-            }
-            else if(nFacingsP1 > 1) {
-                randFacingP1 = randomFacing(nFacingsP1)+1;
-                ok1 = true;
-            }
-        }
-        while(!ok2) {
-            product2 = randomProduct(p.size());
-            if (product2 == product1) 
-                continue;
-            nFacingsP2 = Shelf.getFacings(s1.Shelves.get(shelf2), p.get(product2));
-            if(nFacingsP2 == 1) {
-                ok2 = true;
-            }
-            else if(nFacingsP2 > 1) {
-                randFacingP2 = randomFacing(nFacingsP2)+1;
-                ok2 = true;
-            }
-        }
-        if(randFacingP1 == 0) 
-            randFacingP1=1;
-        if(randFacingP2 == 0)
-            randFacingP2=1;
-        
-        a.specs[0]= shelf1;
-        a.specs[1]= product1;
-        a.specs[2]= shelf2;
-        a.specs[3]= product2;
-        
-        // falta recolher os produtos com o facing certo
-        for (int i = 0; i < s1.Shelves.get(shelf2).products.size(); i++) {
-            if(s1.Shelves.get(shelf2).products.get(i).id == p.get(product2).id) {
-                count++;
-            }
-            if(count == randFacingP2) {
-                index2 = i;
-                break;
-            }
-        }
-        count = 0;
-        aux = s1.Shelves.get(shelf2).products.get(index2);
-        
-        for (int i = 0; i < s1.Shelves.get(shelf1).products.size(); i++) {
-            if(s1.Shelves.get(shelf1).products.get(i).id == p.get(product1).id) {
-                count++;
-            }
-            if(count == randFacingP1) {
-                index1 = i;
-                break;
-            }
-        }
-        // para atualizar a largura usada nas prateleiras
-        width1 = s1.Shelves.get(shelf1).products.get(index1).width;
-        width2 = s1.Shelves.get(shelf2).products.get(index2).width;
-        if(width1 > width2) {
-            widthDif = width1 - width2;
-            s1.Shelves.get(shelf1).freeWidth += widthDif; 
-            s1.Shelves.get(shelf1).usedWidth -= widthDif;
-            s1.Shelves.get(shelf2).freeWidth -= widthDif; 
-            s1.Shelves.get(shelf2).usedWidth += widthDif;
-        }
-        else if(width1 < width2) {
-            widthDif = width2 - width1;
-            s1.Shelves.get(shelf1).freeWidth -= widthDif; 
-            s1.Shelves.get(shelf1).usedWidth += widthDif;
-            s1.Shelves.get(shelf2).freeWidth += widthDif; 
-            s1.Shelves.get(shelf2).usedWidth -= widthDif;
-        }
-        // fazer a troca final
-        s1.Shelves.get(shelf2).products.set(index2, s1.Shelves.get(shelf1).products.get(index1));
-        s1.Shelves.get(shelf1).products.set(index1, aux);
-        Solution.getProfit(p, s1);
-        
-        return s1;
-    }
+    
     // retorna um número aleatório para uma prateleira
     public static int randomShelf(int nShelves) {
         Random rand = new Random();

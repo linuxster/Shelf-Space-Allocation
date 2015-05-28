@@ -8,7 +8,6 @@ import java.util.Random;
 
 
 // Para Fazer:  
-//      1. escrever a função mostLucrative (descrição na função)
 
 public class Solution {
     List<Shelf> Shelves = new ArrayList<Shelf>();
@@ -17,7 +16,6 @@ public class Solution {
     // retorna o Lucro gerado por uma Solução
     public static double getProfit (List<Product> P, Solution s) {
         int numberFacings=0;
-        int restrictionPenalty = 500;
         
         if(s.profit != 0)
             s.profit = 0;
@@ -30,15 +28,7 @@ public class Solution {
                     continue;
                 s.profit += s.Shelves.get(i).worth*Product.valueFacing(P.get(j), numberFacings);
             }
-        }
-        // penalização por infringir as restrições
-        int sizePenalty = 0;
-        for (int i = 0; i < s.Shelves.size(); i++) {
-            if( Shelf.isOverLimit(s.Shelves.get(i)) )
-                sizePenalty++;
-        }
-        s.profit -= sizePenalty * restrictionPenalty;
-        
+        }        
         return s.profit;
     }
     // de uma lista de soluções, retorna o índice daquela que for mais lucrativa
@@ -91,4 +81,23 @@ public class Solution {
             System.out.println("");
         }
     }
+    // copia uma solução para outra , s2 --> s1
+    public static void copySolution(Solution s1, Solution s2) {
+        
+        for (int i = 0; i < s2.Shelves.size(); i++) {
+            Shelf aux = new Shelf();
+            s1.Shelves.add(aux);
+        }
+        s1.profit = s2.profit;
+        for (int i = 0; i < s2.Shelves.size(); i++) {
+            s1.Shelves.get(i).id = s2.Shelves.get(i).id;
+            s1.Shelves.get(i).freeWidth = s2.Shelves.get(i).freeWidth;
+            s1.Shelves.get(i).usedWidth = s2.Shelves.get(i).usedWidth;
+            s1.Shelves.get(i).worth = s2.Shelves.get(i).worth;
+            for (int j = 0; j < s2.Shelves.get(i).products.size(); j++) {
+                s1.Shelves.get(i).products.add(s2.Shelves.get(i).products.get(j));
+            }
+        }
+    }
+   
 }

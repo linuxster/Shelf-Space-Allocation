@@ -7,7 +7,6 @@ import java.util.Collections;
 
 
 // Para Fazer:  
-//      1. escrever a função getShelfProfit (descrição na função)
 
 public class Shelf {
     int id;
@@ -30,15 +29,21 @@ public class Shelf {
     }
     // adiciona um produto a uma prateleira e realiza operações associadas
     public static void addProduct(Shelf s, Product p) {
-        s.products.add(p);
-        s.usedWidth += p.width;
-        s.freeWidth -= p.width;
+        while(s.freeWidth >= p.width) {
+            s.products.add(p);
+            s.usedWidth += p.width;
+            s.freeWidth -= p.width;
+        }
     }
     // remove um produto de uma prateleira e realiza operações associadas
     public static void removeProduct(Shelf s, Product p) {
-        s.products.remove(p);
-        s.usedWidth -= p.width;
-        s.freeWidth += p.width;
+        double totalSize=0;
+        while(Shelf.getFacings(s, p) > 0) {
+            s.products.remove(p);
+            s.usedWidth -= p.width;
+            s.freeWidth += p.width;
+        }
+        
     }
     // retorna o número de Facings do produto numa determinada prateleira
     public static int getFacings(Shelf s, Product p) {
@@ -68,5 +73,11 @@ public class Shelf {
         }
         else   
             return false;
+    }
+    // SÓ PARA SOLUÇÃO INICIAL, adiciona um produto a uma prateleira e realiza operações associadas
+    public static void addInitialProduct(Shelf s, Product p) {
+        s.products.add(p);
+        s.usedWidth += p.width;
+        s.freeWidth -= p.width;
     }
 }
