@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Random;
 
 
-// Para Fazer:  
 
 public class Solution {
     List<Shelf> Shelves = new ArrayList<Shelf>();
