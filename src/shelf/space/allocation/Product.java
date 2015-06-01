@@ -30,13 +30,13 @@ public class Product {
     }
     // retorna o valor do lucro associado a ter o produto P com n frentes numa prateleira
     public static double valueFacing(Product p, int n) {
-        double value;
         double iteration[] = new double[6];
         
         for (int i = 0; i < 6; i++) {
             iteration[i] = p.price*p.salesValue*Math.pow(i+1, p.elasticity);
             //System.out.println("Interação "+ i + ": " + iteration[i]);
         }
+        
         return iteration[n-1];
     } 
     // retorna o lucro associado a ter o produto P n iterações, quando comparado com já termos n-1 iterações na prateleira
@@ -61,6 +61,18 @@ public class Product {
                 return products.get(i);
         }
         return null;
+    }
+    //
+    public static boolean isUsed(List<Product> P, Solution s, int index) {
+        int numberFacings = 0;
+        for (int j = 0; j < s.Shelves.size(); j++) {
+            numberFacings += Shelf.getFacings(s.Shelves.get(j), P.get(index));
+        }
+        if(numberFacings == 0)
+            return false;
+        else 
+            return true;
+    
     }
 }
 

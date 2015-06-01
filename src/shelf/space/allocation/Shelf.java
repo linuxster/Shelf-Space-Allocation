@@ -25,8 +25,8 @@ public class Shelf {
         double shelfProfit=0;
         for (int i=0;i<p.size();i++){
             int facings = Shelf.getFacings(s,Product.getProduct(p, i));
-            double lucroproduto=Product.valueFacing(Product.getProduct(p, i), facings);
-            shelfProfit = shelfProfit + lucroproduto*s.worth;
+            double lucroProduto=Product.valueFacing(Product.getProduct(p, i), facings);
+            shelfProfit = shelfProfit + lucroProduto*s.worth;
         }
         return shelfProfit;
     }

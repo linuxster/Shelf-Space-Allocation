@@ -7,14 +7,17 @@ import java.util.Collections;
 import java.util.Random;
 
 
-// Para Fazer:  
+// Para Fazer:  ACABAR O BIGSWITCH (LINHA 50)
 
 public class SSA {
     
     public static void main(String[] args) {
         Solution S0 = new Solution();
         Solution S1 = new Solution();
-        List<Action> aListIteration = new ArrayList<Action>();
+        Solution globalBest = new Solution(), aux = new Solution();
+        int bestIteration = 0;
+        List<Action> tabuList = new ArrayList<Action>();
+        
         
         List<Product> P = SSA.registerProducts();
         Shelf S[] = SSA.registerShelves();
@@ -26,12 +29,134 @@ public class SSA {
         Solution.printRepresentation(Solution.problemRepresentation(S0, P), S0.profit);
         //System.out.printf("%.2f\t%.2f\t%.2f\t%.2f\n", S0.Shelves.get(0).freeWidth, S0.Shelves.get(1).freeWidth, S0.Shelves.get(2).freeWidth, S0.Shelves.get(3).freeWidth);
         
-        S1 = SSA.generateProblemIteration(P, S, S0);
-        System.out.println("\nMELHOR SOLUÇÃO:");
-        Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
+        // INICIAR A PESQUISA TABU
+        int maxIterations = 5000, tabuIterationLimitRemove = 1, tabuIterationLimitAdd = 15;
+        int bigSwitch=-1, aux1 = 0;
+        boolean ok = false;
+        
+        Solution.copySolution(S1, S0);
+        for (int i = 0; i < maxIterations; i++) {
+            Action actionIteration = new Action();
+            Action.updateTabuList(tabuList);
+            aux = SSA.generateProblemIteration(P, S, S1, actionIteration, tabuList);
+            
+            
+            if(aux.profit > globalBest.profit) {
+                Solution.copySolution(globalBest, aux);
+                Solution.copySolution(S1, aux);
+                bestIteration = i;
+                actionIteration.tabuCount = tabuIterationLimitAdd;
+                tabuList.add(actionIteration);
+            }
+            else if(aux.profit > S1.profit) {
+                Solution.copySolution(S1, aux);
+                actionIteration.tabuCount = tabuIterationLimitAdd;
+                tabuList.add(actionIteration);
+            }
+            else {
+                while(!ok) {
+                    bigSwitch = Action.randomProduct();
+                    for (int j = 0; j < tabuList.size(); j++) {
+                        if(tabuList.get(j).shelf == -1 && tabuList.get(j).product1 == bigSwitch )
+                            aux1++;
+                    }
+                    if(aux1 > 0) 
+                        aux1 = 0;
+                    else {
+                        if(Product.isUsed(P, aux, bigSwitch) == false)
+                            continue;
+                        ok = true;
+                    }
+                }
+                ok = false;
+                S1 = Solution.switchNeighbourhood(S1, P, bigSwitch);
+                actionIteration.shelf = -1;
+                actionIteration.product1 = bigSwitch; 
+                actionIteration.product2 = bigSwitch; 
+                actionIteration.tabuCount = tabuIterationLimitRemove;
+            }
+            if(Solution.isEmpty(S1)) {
+                System.out.println("Chegou-se a uma solução nula.");
+                break;
+            }
+            tabuList.add(actionIteration);
+            //System.out.println("\nMELHOR SOLUÇÃO ITERAÇÃO "+ (i+1) +":" );
+            //Solution.printRepresentation(Solution.problemRepresentation(S1, P), S1.profit);
+            //System.out.printf(" %.2f\t %.2f\t %.2f\t %.2f\t (largura disponível)\n", S1.Shelves.get(0).freeWidth, S1.Shelves.get(1).freeWidth, S1.Shelves.get(2).freeWidth, S1.Shelves.get(3).freeWidth);
+            //Action.printAction(actionIteration);            
+        }
+        System.out.println("\nMELHOR SOLUÇÃO GLOBAL: (iteração " + (bestIteration+1) +")");
+        Solution.printRepresentation(Solution.problemRepresentation(globalBest, P), globalBest.profit);
+        System.out.printf(" %.2f\t %.2f\t %.2f\t %.2f\t (largura disponível)\n", globalBest.Shelves.get(0).freeWidth, globalBest.Shelves.get(1).freeWidth, globalBest.Shelves.get(2).freeWidth, globalBest.Shelves.get(3).freeWidth);
+            
+        
                
     }
     
+    // 
+    public static Solution generateProblemIteration(List<Product> p, Shelf[] s, Solution s0, Action a, List<Action> tabuList) {
+        List<Solution> sList = new ArrayList<Solution>();
+        List<Action> aList = new ArrayList<Action>();
+        int index;
+        boolean skipSolution = false;
+        
+        for (int i = 0; i < s0.Shelves.size(); i++) {
+            for (int j = 0; j < p.size(); j++) {
+                if(Shelf.getFacings(s0.Shelves.get(i), p.get(j)) > 0){
+                    for (int k = 0; k < p.size(); k++) {
+                        for (int m = 0; m < tabuList.size(); m++) {
+                        if(tabuList.get(m).shelf == i && tabuList.get(m).product2 == k )
+                            skipSolution = true;
+                        }
+                        if(skipSolution) {
+                            skipSolution = false;
+                            continue;
+                        }
+                        Solution newSolution = new Solution();
+                        Solution.copySolution(newSolution, s0);
+                        
+                        Shelf.removeProduct(newSolution.Shelves.get(i), p.get(j));
+                        Solution.getProfit(p, newSolution);
+                        
+                        Action auxAction = new Action();
+                        auxAction.shelf = i;
+                        auxAction.product1 = j;
+                        auxAction.product2 = k;
+                        
+                        Shelf.addProduct(newSolution.Shelves.get(i), p.get(k));
+                        Solution.getProfit(p, newSolution);
+                        aList.add(auxAction);
+                        sList.add(newSolution);
+                    }
+                }
+                else {
+                    for (int k = 0; k < tabuList.size(); k++) {
+                        if(tabuList.get(k).shelf == -1 && tabuList.get(k).product1 == j )
+                            skipSolution = true;
+                    }
+                    if(skipSolution) {
+                        skipSolution = false;
+                        continue;
+                    }
+                    Solution aux = new Solution();
+                    Solution.copySolution(aux, s0);
+                    Shelf.addProduct(aux.Shelves.get(i), p.get(j));
+                    Solution.getProfit(p, aux);
+                    Action auxAction = new Action();
+                    auxAction.shelf = i;
+                    auxAction.product1 = j;
+                    auxAction.product2 = j;
+                    
+                    aList.add(auxAction);
+                    sList.add(aux);
+                }
+            }
+        }
+        
+        index = Solution.mostLucrative(sList);
+        Action.copyAction(a, aList.get(index));
+        return sList.get(index);
+    }
     // gera a nossa solução inicial para o problema
     public static int generateInitialSolution(Solution solution, List<Product> products, Shelf[] shelves) {
         List<Integer> orderProductsProfit = new ArrayList<Integer>();
@@ -53,42 +178,6 @@ public class SSA {
                 iterator = 0;
         }
         return 1;
-    }
-    //
-    public static Solution generateProblemIteration(List<Product> p, Shelf[] s, Solution s0) {
-        Action a = new Action();
-        List<Solution> sList = new ArrayList<Solution>();
-        List<Action> aList = new ArrayList<Action>();
-        
-        for (int i = 0; i < s0.Shelves.size(); i++) {
-            System.out.println("\nPRATELEIRA "+ (i+1) +":");
-            for (int j = 0; j < p.size(); j++) {
-                if(Shelf.getFacings(s0.Shelves.get(i), p.get(j)) > 0){
-                    Solution aux = new Solution();
-                    Solution.copySolution(aux, s0);
-                    //System.out.println("Solução inicial");
-                    //Solution.printRepresentation(Solution.problemRepresentation(aux, p), aux.profit);
-                    Shelf.removeProduct(aux.Shelves.get(i), p.get(j));
-                    Solution.getProfit(p, aux);
-                    for (int k = 0; k < p.size(); k++) {
-                        if(j == k) {
-                            continue;
-                        }
-                        Solution newSolution = new Solution();
-                        Solution.copySolution(newSolution, aux);
-                        
-                        Shelf.addProduct(newSolution.Shelves.get(i), p.get(k));
-                        Solution.getProfit(p, newSolution);
-                        sList.add(newSolution);
-                        Solution.printRepresentation(Solution.problemRepresentation(newSolution, p), newSolution.profit);
-                    }
-                    System.out.println("ACABARAM AS SUBSTITUIÇÕES DO PRODUTO "+ (j+1));
-                }
-            }
-        
-        }
-        
-        return sList.get(Solution.mostLucrative(sList));
     }
     // introduz no sistema, num vetor de Prateleiras, as que são dadas na instância
     public static Shelf[] registerShelves() {
@@ -225,68 +314,3 @@ public class SSA {
         return P;
     }
 }
-
-/*
-import java.util.Random;
-
-public class MotionUncertainty {
-
-    // after the agent decides the action, this gives us the real action (after applying the uncertainty on movements)
-    public static String GenerateTrueAction() {
-        String trueAction = new String();
-        Random rand = new Random();
-        int prob = rand.nextInt(100);
-        double p1, p2;
-        p1 = 0.8; p2 = 0.1;
-
-        if ( prob <= 100*p1-1 )
-            trueAction = "^";
-        else if ( prob > (100*p1-1) &&  prob <= (100*(p1+p2)-1) )
-            trueAction = "<";
-        else if ( prob > (100*(p1+p2)-1) && prob <= 100*(p1+2*p2) )
-            trueAction = ">";
-
-        return trueAction;
-    }
-}
-*/
-
-/*   TESTE PARA LISTA FEITA EM EXCEL
-        Solution S0 = new Solution();
-        List<Shelf> shelf0 = new ArrayList<Shelf>();
-        Shelf.initializeShelfList(shelf0, S);
-        for (int i = 0; i < shelf0.size(); i++) {
-            switch (i) {
-                case (0): 
-                    Shelf.addProduct(shelf0.get(i), P.get(1));
-                    Shelf.addProduct(shelf0.get(i), P.get(0));
-                    Shelf.addProduct(shelf0.get(i), P.get(2));
-                    Shelf.addProduct(shelf0.get(i), P.get(4));
-                   
-                    //shelf0.get(i).products.add(P.get(1));
-                    //Shelf.addProduct(shelf0.get(i), P[1]);
-                    
-                    break;
-                case (1): 
-                    Shelf.addProduct(shelf0.get(i), P.get(2));
-                    Shelf.addProduct(shelf0.get(i), P.get(4));
-                    Shelf.addProduct(shelf0.get(i), P.get(5));
-                    Shelf.addProduct(shelf0.get(i), P.get(0));
-                    Shelf.addProduct(shelf0.get(i), P.get(2));
-                    break;
-                case (2): 
-                    Shelf.addProduct(shelf0.get(i), P.get(3));
-                    Shelf.addProduct(shelf0.get(i), P.get(1));
-                    Shelf.addProduct(shelf0.get(i), P.get(0));
-                    break;
-                case (3): 
-                    Shelf.addProduct(shelf0.get(i), P.get(4));
-                    Shelf.addProduct(shelf0.get(i), P.get(5));
-                    Shelf.addProduct(shelf0.get(i), P.get(3));
-                    break;
-            }
-        }
-        S0.Shelves=shelf0;
-        Solution.getProfit(P, S0);
-        Solution.printSolution(S0);  
-        */

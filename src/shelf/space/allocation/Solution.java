@@ -12,9 +12,22 @@ public class Solution {
     List<Shelf> Shelves = new ArrayList<Shelf>();
     double profit;
     
+    
+    public static Solution switchNeighbourhood(Solution S1, List<Product> P, int count) {
+        Solution newSolution = new Solution();
+        Solution.copySolution(newSolution, S1);
+        for (int i = 0; i < newSolution.Shelves.size(); i++) {
+            Shelf.removeProduct(newSolution.Shelves.get(i), P.get(count));
+        }
+        Solution.getProfit(P, newSolution);
+        
+        return newSolution;
+    }
     // retorna o Lucro gerado por uma Solução
-    public static double getProfit (List<Product> P, Solution s) {
+    public static void getProfit (List<Product> P, Solution s) {
         int numberFacings=0;
+        int transgression = 0;
+        int penalty = 500;
         
         if(s.profit != 0)
             s.profit = 0;
@@ -27,8 +40,16 @@ public class Solution {
                     continue;
                 s.profit += s.Shelves.get(i).worth*Product.valueFacing(P.get(j), numberFacings);
             }
-        }        
-        return s.profit;
+        }
+        
+        // penalização por não ter todos os produtos pelo menos 1 vez
+        for (int i = 0; i < P.size(); i++) {
+            if(Product.isUsed(P, s, i) == false)
+                transgression++;
+        }
+        if(transgression > 0)
+            s.profit -= penalty;
+        
     }
     // de uma lista de soluções, retorna o índice daquela que for mais lucrativa
     public static int mostLucrative(List<Solution> sList) {
@@ -83,9 +104,11 @@ public class Solution {
     // copia uma solução para outra , s2 --> s1
     public static void copySolution(Solution s1, Solution s2) {
         
-        for (int i = 0; i < s2.Shelves.size(); i++) {
-            Shelf aux = new Shelf();
-            s1.Shelves.add(aux);
+        if(s1.Shelves.size() == 0) {
+            for (int i = 0; i < s2.Shelves.size(); i++) {
+                Shelf aux = new Shelf();
+                s1.Shelves.add(aux);
+            }
         }
         s1.profit = s2.profit;
         for (int i = 0; i < s2.Shelves.size(); i++) {
@@ -93,10 +116,27 @@ public class Solution {
             s1.Shelves.get(i).freeWidth = s2.Shelves.get(i).freeWidth;
             s1.Shelves.get(i).usedWidth = s2.Shelves.get(i).usedWidth;
             s1.Shelves.get(i).worth = s2.Shelves.get(i).worth;
+            if(s1.Shelves.get(i).products.size() > 0) {
+                for (int j = (s1.Shelves.get(i).products.size()-1); j >= 0; j--) {
+                    s1.Shelves.get(i).products.remove(j);
+                }
+            }
             for (int j = 0; j < s2.Shelves.get(i).products.size(); j++) {
                 s1.Shelves.get(i).products.add(s2.Shelves.get(i).products.get(j));
             }
         }
     }
-   
+    //
+    public static boolean isEmpty(Solution s) {
+        int count = 0;
+    
+        for (int i = 0; i < s.Shelves.size(); i++) {
+            if(s.Shelves.get(i).usedWidth > 0)
+                count++; 
+        }
+        if(count == 0)
+            return true;
+        else 
+            return false;
+    }
 }
