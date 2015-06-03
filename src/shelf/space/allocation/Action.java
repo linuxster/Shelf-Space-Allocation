@@ -5,11 +5,6 @@ import java.util.List;
 
 // Para Fazer:  Atualizar a função printAction
 
-// Detalhes das ações:
-// specs[0]=shelf1, specs[1]=product1, specs[2]=shelf2, specs[3]=product2 
-// tipo 0:  trocar uma prateleira por outra (shelf1 <===> shelf2)
-// tipo 1:  trocar um produto por outro (product1 <===> product2)
-
 public class Action {
     int shelf, product1, product2;
     int tabuCount;
@@ -34,10 +29,6 @@ public class Action {
         }
     }
     // retorna um número aleatório para um produto
-    /*public static int randomProduct(int nProducts) {
-        Random rand = new Random();
-        return rand.nextInt(nProducts);
-    }*/
     public static int randomProduct() {
         Random rand = new Random();
         //return rand.nextInt(5);

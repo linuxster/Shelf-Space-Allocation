@@ -32,15 +32,17 @@ public class SSA {
         //System.out.printf("%.2f\t%.2f\t%.2f\t%.2f\n", S0.Shelves.get(0).freeWidth, S0.Shelves.get(1).freeWidth, S0.Shelves.get(2).freeWidth, S0.Shelves.get(3).freeWidth);
         
         // INICIAR A PESQUISA TABU
-        int maxIterations = 7500, tabuIterationLimitRemove = 5, tabuIterationLimitAdd = 7;
+        int maxIterations = 7500, tabuIterationLimitRemove = 2, tabuIterationLimitAdd = 7;
         int bigSwitch=-1, aux1 = 0;
         boolean ok = false;
         
         Solution.copySolution(S1, S0);
+        //System.out.println("Soluções:");
         for (int i = 0; i < maxIterations; i++) {
+            //System.out.printf("%.2f\n",S1.profit);
             Action actionIteration = new Action();
             Action.updateTabuList(tabuList);
-            aux = SSA.generateProblemIteration(P, S, S1, actionIteration, tabuList);
+            aux = SSA.generateProblemIteration(P, S, S1, actionIteration, tabuList, globalBest);
             
             
             if(aux.profit > globalBest.profit) {
@@ -87,6 +89,7 @@ public class SSA {
             //System.out.printf(" %.2f\t %.2f\t %.2f\t %.2f\t (largura disponível)\n", S1.Shelves.get(0).freeWidth, S1.Shelves.get(1).freeWidth, S1.Shelves.get(2).freeWidth, S1.Shelves.get(3).freeWidth);
             //Action.printAction(actionIteration);            
         }
+        //System.out.printf("%.2f\n", S1.profit);
         System.out.println("\nMELHOR SOLUÇÃO: (iteração " + (bestIteration+1) +")");
         Solution.printRepresentation(Solution.problemRepresentation(globalBest, P), globalBest.profit);
         System.out.printf(" %.2f\t %.2f\t %.2f\t %.2f\t (largura disponível)\n", globalBest.Shelves.get(0).freeWidth, globalBest.Shelves.get(1).freeWidth, globalBest.Shelves.get(2).freeWidth, globalBest.Shelves.get(3).freeWidth);
@@ -96,7 +99,7 @@ public class SSA {
     }
     
     // 
-    public static Solution generateProblemIteration(List<Product> p, Shelf[] s, Solution s0, Action a, List<Action> tabuList) {
+    public static Solution generateProblemIteration(List<Product> p, Shelf[] s, Solution s0, Action a, List<Action> tabuList, Solution globalBest) {
         List<Solution> sList = new ArrayList<Solution>();
         List<Action> aList = new ArrayList<Action>();
         boolean skipSolution = false;
@@ -105,14 +108,6 @@ public class SSA {
             for (int j = 0; j < p.size(); j++) {
                 if(Shelf.getFacings(s0.Shelves.get(i), p.get(j)) > 0){
                     for (int k = 0; k < p.size(); k++) {
-                        for (int m = 0; m < tabuList.size(); m++) {
-                            if(tabuList.get(m).shelf == i && tabuList.get(m).product2 == k )
-                                skipSolution = true;
-                        }
-                        if(skipSolution) {
-                            skipSolution = false;
-                            continue;
-                        }
                         Solution newSolution = new Solution();
                         Solution.copySolution(newSolution, s0);
                         Shelf.removeProduct(newSolution.Shelves.get(i), p.get(j));
@@ -125,19 +120,26 @@ public class SSA {
                         
                         Shelf.addProduct(newSolution.Shelves.get(i), p.get(k));
                         Solution.getProfit(p, newSolution);
+                            // VERIFICAR LISTA TABU
+                        for (int m = 0; m < tabuList.size(); m++) {
+                            if(tabuList.get(m).shelf == i && tabuList.get(m).product2 == k ) {
+                                    // CRITÉRIO DE ASPIRAÇÃO
+                                if(newSolution.profit > globalBest.profit) 
+                                    skipSolution = false;
+                                else
+                                    skipSolution = true;
+                            }
+                        }
+                        if(skipSolution) {
+                            skipSolution = false;
+                            continue;
+                        }
+                        
                         aList.add(auxAction);
                         sList.add(newSolution);
                     }
                 }
                 else {
-                    for (int k = 0; k < tabuList.size(); k++) {
-                        if(tabuList.get(k).shelf == -1 && tabuList.get(k).product1 == j )
-                            skipSolution = true;
-                    }
-                    if(skipSolution) {
-                        skipSolution = false;
-                        continue;
-                    }
                     Solution aux = new Solution();
                     Solution.copySolution(aux, s0);
                     Shelf.addProduct(aux.Shelves.get(i), p.get(j));
@@ -147,6 +149,19 @@ public class SSA {
                     auxAction.shelf = i;
                     auxAction.product1 = j;
                     auxAction.product2 = j;
+                    
+                    for (int k = 0; k < tabuList.size(); k++) {
+                        if(tabuList.get(k).shelf == -1 && tabuList.get(k).product1 == j )
+                                // CRITÉRIO DE ASPIRAÇÃO
+                                if(aux.profit > globalBest.profit) 
+                                    skipSolution = false;
+                                else
+                                    skipSolution = true;
+                    }
+                    if(skipSolution) {
+                        skipSolution = false;
+                        continue;
+                    }
                     
                     aList.add(auxAction);
                     sList.add(aux);
