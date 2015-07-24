@@ -24,7 +24,7 @@ public class SSA {
         Shelf S[] = SSA.registerShelves();
         
         // GERAR A SOLUÇÃO INICIAL
-        SSA.generateInitialSolution(S0, P, S);
+        SSA.generateInitialSolution2(S0, P, S);
         //SSA.generateInitialSolution2(S0, P, S);
         Solution.getProfit(P, S0);
         System.out.println("SOLUÇÃO INICIAL:");
@@ -32,32 +32,40 @@ public class SSA {
         //System.out.printf("%.2f\t%.2f\t%.2f\t%.2f\n", S0.Shelves.get(0).freeWidth, S0.Shelves.get(1).freeWidth, S0.Shelves.get(2).freeWidth, S0.Shelves.get(3).freeWidth);
         
         // INICIAR A PESQUISA TABU
-        int maxIterations = 7500, tabuIterationLimitRemove = 2, tabuIterationLimitAdd = 7;
-        int bigSwitch=-1, aux1 = 0;
+        int maxIterations = 5000, tabuIterationLimitRemove = 5, tabuIterationLimitAdd = 10, neighbourhoodCounter = 30;
+        int bigSwitch=-1, iterationCounter = 0, aux1 = 0;
         boolean ok = false;
         
         Solution.copySolution(S1, S0);
-        //System.out.println("Soluções:");
+        System.out.println("Soluções:");
         for (int i = 0; i < maxIterations; i++) {
             //System.out.printf("%.2f\n",S1.profit);
             Action actionIteration = new Action();
             Action.updateTabuList(tabuList);
             aux = SSA.generateProblemIteration(P, S, S1, actionIteration, tabuList, globalBest);
             
-            
             if(aux.profit > globalBest.profit) {
                 Solution.copySolution(globalBest, aux);
                 Solution.copySolution(S1, aux);
                 bestIteration = i;
-                actionIteration.tabuCount = tabuIterationLimitAdd;
-                tabuList.add(actionIteration);
+                //actionIteration.tabuCount = tabuIterationLimitAdd;
+                //tabuList.add(actionIteration);
+                iterationCounter = 0;
             }
             else if(aux.profit > S1.profit) {
                 Solution.copySolution(S1, aux);
+                iterationCounter = 0;
+                //actionIteration.tabuCount = tabuIterationLimitAdd;
+                //tabuList.add(actionIteration);
+            }
+            else if(iterationCounter != neighbourhoodCounter) {
+                Solution.copySolution(S1, aux);
                 actionIteration.tabuCount = tabuIterationLimitAdd;
                 tabuList.add(actionIteration);
+                iterationCounter++;
             }
             else {
+                iterationCounter = 0;
                 while(!ok) {
                     bigSwitch = Action.randomProduct();
                     for (int j = 0; j < tabuList.size(); j++) {
